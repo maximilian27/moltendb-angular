@@ -19,9 +19,22 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
+              "src/favicon.ico",
+              "src/public",
               {
-                "glob": "**/*",
-                "input": "public"
+                "glob": "moltendb-worker.js",
+                "input": "node_modules/@moltendb-web/core/dist",
+                "output": "/"
+              },
+              {
+                "glob": "moltendb.js",
+                "input": "node_modules/@moltendb-web/core/dist",
+                "output": "/"
+              },
+              {
+                "glob": "*.wasm",
+                "input": "node_modules/@moltendb-web/core/dist",
+                "output": "/"
               }
             ],
             "styles": [
