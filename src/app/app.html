@@ -1,20 +1,27 @@
-<h1>MoltenDB Angular Test</h1>
+<div class="container">
+  <h1>MoltenDb + Angular Signals</h1>
 
-<button (click)="addUser()" style="margin-bottom: 20px; padding: 10px;">
-  + Add Random User
-</button>
+  <div class="actions">
+    <button (click)="addUser()">+ Add Random User</button>
+    <button (click)="users.reload()" [disabled]="users.isLoading()">🔄 Refresh</button>
+    <button (click)="clearUsers()" class="danger">🗑️ Clear All</button>
+  </div>
 
-@if (users.isLoading()) {
-  <p>Booting WASM and fetching data...</p>
-} @else if (users.error()) {
-  <p style="color: red;">Error: {{ users.error()?.message }}</p>
-} @else {
-  <ul>
-    @for (user of users.data(); track user._key) {
-      <li>{{ user.name }} ({{ user.role }})</li>
-    }
-    @empty {
-      <li>No users in the database yet!</li>
-    }
-  </ul>
-}
+  <hr>
+
+  @if (users.isLoading() && !users.value()) {
+    <p>Loading...</p>
+  }
+
+  @if (users.value()) {
+    <ul>
+      @for (user of users.value(); track user._key) {
+        <li>{{ user.name }}</li>
+      }
+    </ul>
+  }
+
+  @if (users.error()) {
+    <div class="alert">{{ users.error().message }}</div>
+  }
+</div>
