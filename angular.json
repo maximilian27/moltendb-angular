@@ -28,13 +28,13 @@
               },
               {
                 "glob": "moltendb.js",
-                "input": "node_modules/@moltendb-web/core/dist",
-                "output": "/"
+                "input": "node_modules/@moltendb-web/core/dist/wasm",
+                "output": "/wasm/"
               },
               {
                 "glob": "*.wasm",
-                "input": "node_modules/@moltendb-web/core/dist",
-                "output": "/"
+                "input": "node_modules/@moltendb-web/core/dist/wasm",
+                "output": "/wasm/"
               }
             ],
             "styles": [

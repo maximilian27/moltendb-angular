@@ -3,7 +3,6 @@
 
   <div class="actions">
     <button (click)="addUser()">+ Add Random User</button>
-    <button (click)="users.reload()" [disabled]="users.isLoading()">🔄 Refresh</button>
     <button (click)="clearUsers()" class="danger">🗑️ Clear All</button>
   </div>
 
@@ -16,7 +15,7 @@
   @if (users.value()) {
     <ul>
       @for (user of users.value(); track user._key) {
-        <li>{{ user.name }}</li>
+        <li><span>{{ user.name }}</span><span>{{ user._key }}</span></li>
       }
     </ul>
   }
