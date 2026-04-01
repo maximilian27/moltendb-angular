@@ -5,12 +5,18 @@
 
     <div class="filter-group">
       <label>Minimum Deal Size: ${{ minAmount() | number }}</label>
-      <input type="range" min="0" max="100000" step="5000" [(ngModel)]="minAmount">
+      <input type="range"
+             min="0"
+             max="100000"
+             step="5000"
+             [ngModel]="minAmount()"
+             (ngModelChange)="minAmount.set($event); saveUISettings()">
     </div>
 
     <div class="filter-group">
       <label>Deal Status</label>
-      <select [(ngModel)]="selectedStatus">
+      <select [ngModel]="selectedStatus()"
+              (ngModelChange)="selectedStatus.set($event); saveUISettings()">
         <option value="all">All Statuses</option>
         <option value="negotiation">In Negotiation</option>
         <option value="won">Closed Won</option>
@@ -19,7 +25,8 @@
 
     <div class="filter-group">
       <label>Industry</label>
-      <select [(ngModel)]="selectedIndustry">
+      <select [ngModel]="selectedIndustry()"
+              (ngModelChange)="selectedIndustry.set($event); saveUISettings()">
         <option value="all">All Industries</option>
         <option value="software">Software / SaaS</option>
         <option value="manufacturing">Manufacturing</option>

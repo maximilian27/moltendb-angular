@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { moltendbClient, moltenDbResource } from "@moltendb-web/angular";
@@ -30,6 +30,19 @@ export class App implements OnInit {
   minAmount = signal<number>(0);
   selectedStatus = signal<string>('all');
   selectedIndustry = signal<string>('all');
+  async saveUISettings() {
+    const state = {
+      minAmount: this.minAmount(),
+      selectedStatus: this.selectedStatus(),
+      selectedIndustry: this.selectedIndustry()
+    };
+
+    await this.client.collection('ui_settings').set({
+      crm_filters: state
+    }).exec();
+
+    console.log('UI State persisted to MoltenDB');
+  }
 
   // 1. Filtered Deals Resource
   filteredDeals = moltenDbResource<DealView[]>('deals', async (collection) => {
@@ -77,12 +90,28 @@ export class App implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
-    // Initializing seed data
-    await this.seedDatabase();
+    // 3. Load UI state BEFORE seeding or fetching
+    await this.loadUISettings();
 
-    // Debug like your working sample
-    const deals = await this.client.collection('deals').get().exec();
-    console.debug('App initialized with deals:', deals);
+    await this.seedDatabase();
+  }
+
+  private async loadUISettings() {
+    try {
+      const settings = await this.client.collection('ui_settings').get().keys('crm_filters').exec() as any;
+
+      if (settings && settings.minAmount !== undefined) {
+        const { minAmount, selectedStatus, selectedIndustry } = settings;
+
+        this.minAmount.set(minAmount);
+        this.selectedStatus.set(selectedStatus);
+        this.selectedIndustry.set(selectedIndustry);
+
+        console.log('UI State restored:', settings.crm_filters);
+      }
+    } catch (e) {
+      // 404 expected on very first visit
+    }
   }
 
   private async seedDatabase() {
@@ -98,7 +127,7 @@ export class App implements OnInit {
 
     await this.client.collection('companies').set({
       comp1: { name: 'Acme Corp', industry: 'software' },
-      comp2: { name: 'Globex', industry: 'manufacturing' },
+      comp2: { name: 'Globex', industry: 'manufacturing' }, 
       comp3: { name: 'Soylent Corp', industry: 'finance' }
     }).exec();
 
