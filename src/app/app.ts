@@ -85,7 +85,11 @@ export class App implements OnInit {
   columns = signal<ColumnDef[]>(DEFAULT_COLUMNS.map(c => ({ ...c })));
   showColumnPicker = signal<boolean>(false);
 
-  visibleColumns = computed(() => this.columns().filter(c => c.visible));
+  visibleColumns = computed(() => {
+    const rows = this.filteredLaptopsResource.value();
+    const returnedKeys = rows && rows.length > 0 ? new Set(Object.keys(rows[0])) : null;
+    return this.columns().filter(c => returnedKeys ? returnedKeys.has(c.key) : c.visible);
+  });
 
   // ── All laptops resource (unfiltered — used for dropdown option lists) ───
   allLaptops = moltenDbResource<LaptopRow[]>('laptops', async (collection) => {
@@ -102,7 +106,7 @@ export class App implements OnInit {
   filteredLaptopsResource = moltenDbResource<LaptopRow[]>('laptops', async (collection) => {
     // Reading signals here registers them as reactive dependencies on the effect()
     // inside moltenDbResource, so this re-runs whenever any filter signal changes.
-    const search = this.searchText().toLowerCase();
+    const search = this.searchText();
     const brand  = this.selectedBrand();
     const cat    = this.selectedCategory();
     const os     = this.selectedOs();
@@ -114,10 +118,12 @@ export class App implements OnInit {
     const maxR   = this.maxRam();
     const sf     = this.sortField();
     const so     = this.sortOrder();
+    const cols   = this.columns();
 
     // Build WHERE clause using MoltenDB operators
     const where: Record<string, any> = {};
-    if (brand !== 'all')   where['brand']    = brand;
+    if (brand !== 'all')        where['brand'] = brand;
+    else if (search)            where['brand'] = { $contains: search.charAt(0).toUpperCase() + search.slice(1) };
     if (cat   !== 'all')   where['category'] = cat;
     if (os    !== 'all')   where['os']       = os;
     if (panel !== 'all')   where['panel']    = panel;
@@ -125,19 +131,17 @@ export class App implements OnInit {
     if (minP > 0 || maxP < 4000) where['price']  = { $gte: minP, $lte: maxP };
     if (minR > 0 || maxR < 64)   where['ram_gb'] = { $gte: minR, $lte: maxR };
 
+    // Always include _key, visible columns, sort field, and stats fields in projection
+    const fieldSet = new Set(['_key', sf, 'price', 'in_stock', ...cols.filter(c => c.visible).map(c => c.key as string)]);
+    const visibleFields = [...fieldSet];
+
     try {
       let query = collection.get();
       if (Object.keys(where).length > 0) query = query.where(where);
+      query = query.fields(visibleFields);
       query = query.sort([{ field: sf, order: so }]);
-      const result = await query.exec();
-      let rows = result as unknown as LaptopRow[];
+      const rows = (await query.exec()) as unknown as LaptopRow[];
 
-      // Text search across multiple fields — no $or in MoltenDB, done client-side
-      if (search) {
-        rows = rows.filter(l =>
-          `${l.brand} ${l.model} ${l.cpu_model} ${l.gpu}`.toLowerCase().includes(search)
-        );
-      }
       return rows;
     } catch (err: any) {
       if (err.statusCode === 404 || err.error?.includes('No documents')) return [];
