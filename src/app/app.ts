@@ -87,7 +87,7 @@ export class App implements OnInit {
 
   visibleColumns = computed(() => this.columns().filter(c => c.visible));
 
-  // ── All laptops resource (raw data, filtering done client-side for reactivity) ──
+  // ── All laptops resource (unfiltered — used for dropdown option lists) ───
   allLaptops = moltenDbResource<LaptopRow[]>('laptops', async (collection) => {
     try {
       const result = await collection.get().exec();
@@ -98,9 +98,10 @@ export class App implements OnInit {
     }
   });
 
-  // ── Derived: filtered + sorted rows ──────────────────────────────────────
-  filteredLaptops = computed<LaptopRow[]>(() => {
-    const rows = this.allLaptops.value() ?? [];
+  // ── Filtered + sorted resource — uses MoltenDB query builder ─────────────
+  filteredLaptopsResource = moltenDbResource<LaptopRow[]>('laptops', async (collection) => {
+    // Reading signals here registers them as reactive dependencies on the effect()
+    // inside moltenDbResource, so this re-runs whenever any filter signal changes.
     const search = this.searchText().toLowerCase();
     const brand  = this.selectedBrand();
     const cat    = this.selectedCategory();
@@ -114,28 +115,38 @@ export class App implements OnInit {
     const sf     = this.sortField();
     const so     = this.sortOrder();
 
-    let filtered = rows.filter(l => {
-      if (search && !`${l.brand} ${l.model} ${l.cpu_model} ${l.gpu}`.toLowerCase().includes(search)) return false;
-      if (brand !== 'all' && l.brand !== brand) return false;
-      if (cat   !== 'all' && l.category !== cat) return false;
-      if (os    !== 'all' && l.os !== os) return false;
-      if (panel !== 'all' && l.panel !== panel) return false;
-      if (stock && !l.in_stock) return false;
-      if (l.price   < minP || l.price   > maxP) return false;
-      if (l.ram_gb  < minR || l.ram_gb  > maxR) return false;
-      return true;
-    });
+    // Build WHERE clause using MoltenDB operators
+    const where: Record<string, any> = {};
+    if (brand !== 'all')   where['brand']    = brand;
+    if (cat   !== 'all')   where['category'] = cat;
+    if (os    !== 'all')   where['os']       = os;
+    if (panel !== 'all')   where['panel']    = panel;
+    if (stock)             where['in_stock'] = true;
+    if (minP > 0 || maxP < 4000) where['price']  = { $gte: minP, $lte: maxP };
+    if (minR > 0 || maxR < 64)   where['ram_gb'] = { $gte: minR, $lte: maxR };
 
-    filtered = [...filtered].sort((a, b) => {
-      const av = (a as any)[sf];
-      const bv = (b as any)[sf];
-      if (av === bv) return 0;
-      const cmp = av < bv ? -1 : 1;
-      return so === 'asc' ? cmp : -cmp;
-    });
+    try {
+      let query = collection.get();
+      if (Object.keys(where).length > 0) query = query.where(where);
+      query = query.sort([{ field: sf, order: so }]);
+      const result = await query.exec();
+      let rows = result as unknown as LaptopRow[];
 
-    return filtered;
+      // Text search across multiple fields — no $or in MoltenDB, done client-side
+      if (search) {
+        rows = rows.filter(l =>
+          `${l.brand} ${l.model} ${l.cpu_model} ${l.gpu}`.toLowerCase().includes(search)
+        );
+      }
+      return rows;
+    } catch (err: any) {
+      if (err.statusCode === 404 || err.error?.includes('No documents')) return [];
+      throw err;
+    }
   });
+
+  // Convenience accessor matching previous template usage
+  filteredLaptops = computed<LaptopRow[]>(() => this.filteredLaptopsResource.value() ?? []);
 
   // ── Unique values for dropdowns ───────────────────────────────────────────
   brands     = computed(() => [...new Set((this.allLaptops.value() ?? []).map(l => l.brand))].sort());
