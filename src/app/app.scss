@@ -1,0 +1,110 @@
+// crm.component.scss
+:host {
+  --bg-base: #0f1115;
+  --bg-surface: #1e2128;
+  --bg-surface-hover: #2a2e37;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --accent: #3b82f6;
+  --accent-glow: rgba(59, 130, 246, 0.2);
+  --border-color: #334155;
+  --success: #10b981;
+  --warning: #f59e0b;
+
+  display: block;
+  min-height: 100vh;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, sans-serif;
+  padding: 2rem;
+}
+
+.crm-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+// --- Metrics Bar ---
+.metrics-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  .metric-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    border-radius: 12px;
+    flex: 1;
+
+    h3 { margin: 0 0 0.5rem 0; color: var(--text-muted); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .value { font-size: 2rem; font-weight: 700; color: var(--text-main); margin: 0; }
+  }
+}
+
+// --- Filters Sidebar ---
+.filters-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 12px;
+  height: fit-content;
+
+  h2 { margin-top: 0; font-size: 1.25rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+
+  .filter-group {
+    margin-bottom: 1.5rem;
+
+    label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.875rem; }
+
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+    select {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--bg-base);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 6px;
+      outline: none;
+      &:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+    }
+  }
+}
+
+// --- Data Grid ---
+.deal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+
+  .deal-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s, border-color 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .amount { font-size: 1.5rem; font-weight: bold; color: var(--success); }
+    .status-badge {
+      font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 99px; font-weight: 600; text-transform: uppercase;
+      &.won { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+      &.negotiation { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    }
+
+    .meta {
+      color: var(--text-muted); font-size: 0.875rem;
+      p { margin: 0.25rem 0; }
+      strong { color: var(--text-main); }
+    }
+  }
+}

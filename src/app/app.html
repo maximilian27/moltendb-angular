@@ -1,26 +1,70 @@
-<div class="container">
-  <h1>MoltenDb + Angular Signals</h1>
+<div class="crm-layout">
 
-  <div class="actions">
-    <button (click)="addUser()">+ Add Random User</button>
-    <button (click)="clearUsers()" class="danger">🗑️ Clear All</button>
-  </div>
+  <aside class="filters-panel">
+    <h2>Pipeline Filters</h2>
 
-  <hr>
+    <div class="filter-group">
+      <label>Minimum Deal Size: ${{ minAmount() | number }}</label>
+      <input type="range" min="0" max="100000" step="5000" [(ngModel)]="minAmount">
+    </div>
 
-  @if (users.isLoading() && !users.value()) {
-    <p>Loading...</p>
-  }
+    <div class="filter-group">
+      <label>Deal Status</label>
+      <select [(ngModel)]="selectedStatus">
+        <option value="all">All Statuses</option>
+        <option value="negotiation">In Negotiation</option>
+        <option value="won">Closed Won</option>
+      </select>
+    </div>
 
-  @if (users.value()) {
-    <ul>
-      @for (user of users.value(); track user._key) {
-        <li><span>{{ user.name }}</span><span>{{ user._key }}</span></li>
+    <div class="filter-group">
+      <label>Industry</label>
+      <select [(ngModel)]="selectedIndustry">
+        <option value="all">All Industries</option>
+        <option value="software">Software / SaaS</option>
+        <option value="manufacturing">Manufacturing</option>
+        <option value="finance">Finance</option>
+      </select>
+    </div>
+  </aside>
+
+  <main>
+
+    <div class="metrics-bar">
+      <div class="metric-card">
+        <h3>Total Revenue (Won)</h3>
+        <p class="value">${{ metrics.value()?.totalRevenue | number:'1.0-0' }}</p>
+      </div>
+      <div class="metric-card">
+        <h3>Avg Deal Size</h3>
+        <p class="value">${{ metrics.value()?.avgDealSize | number:'1.0-0' }}</p>
+      </div>
+      <div class="metric-card">
+        <h3>Won Deals Count</h3>
+        <p class="value">{{ metrics.value()?.activeDealsCount }}</p>
+      </div>
+    </div>
+
+    <div class="deal-grid">
+      @if (filteredDeals.isLoading() && !filteredDeals.value()) {
+        <p style="color: var(--text-muted)">Querying local database...</p>
       }
-    </ul>
-  }
 
-  @if (users.error()) {
-    <div class="alert">{{ users.error().message }}</div>
-  }
+      @for (deal of filteredDeals.value(); track deal._key) {
+        <div class="deal-card">
+          <div class="header">
+            <span class="amount">${{ deal.amount | number }}</span>
+            <span class="status-badge" [class]="deal.status">{{ deal.status }}</span>
+          </div>
+          <div class="meta">
+            <p>Company: <strong>{{ deal?.company?.name }}</strong></p>
+            <p>Industry: <strong>{{ deal?.company?.industry }}</strong></p>
+          </div>
+        </div>
+      } @empty {
+        <p style="color: var(--text-muted)">No deals match these filters.</p>
+      }
+    </div>
+
+  </main>
 </div>
