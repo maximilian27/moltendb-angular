@@ -33,13 +33,13 @@ export class StressTest {
 
     try {
       // ── Write test ────────────────────────────────────────────────────────
-      const writeCount = 500;
-      this.currentStep.set(`Writing ${writeCount} documents…`);
+      const writeCount = 1000;
+      this.currentStep.set(`Writing ${writeCount.toLocaleString()} documents…`);
       const writeData: Record<string, any> = {};
       for (let i = 0; i < writeCount; i++) {
         writeData[`item_${i}`] = {
           index: i,
-          value: Math.random() * 10000,
+          value: Math.random() * 1000,
           label: `Item ${i}`,
           active: i % 2 === 0,
           category: ['A', 'B', 'C', 'D'][i % 4],
@@ -48,7 +48,7 @@ export class StressTest {
       const writeStart = performance.now();
       await this.client.collection(collection).set(writeData).exec();
       const writeDuration = performance.now() - writeStart;
-      this.addResult('Bulk Write (500 docs)', writeCount, writeDuration);
+      this.addResult('Bulk Write (1000 docs)', writeCount, writeDuration);
 
       // ── Read all test ─────────────────────────────────────────────────────
       this.currentStep.set('Reading all documents…');
@@ -90,7 +90,7 @@ export class StressTest {
       const deleteStart = performance.now();
       await this.client.collection(collection).delete().drop().exec();
       const deleteDuration = performance.now() - deleteStart;
-      this.addResult('Delete All', writeCount, deleteDuration);
+      this.addResult(`Delete All (${writeCount} docs)`, writeCount, deleteDuration);
 
       this.currentStep.set('Done ✅');
     } catch (err) {
