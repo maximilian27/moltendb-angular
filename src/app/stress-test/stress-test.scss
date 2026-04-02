@@ -84,6 +84,20 @@
   font-size: 0.88rem;
 }
 
+.engine-note {
+  margin: 8px 0 0;
+  padding: 8px 14px;
+  background: var(--accent-glow);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+
+  strong {
+    color: var(--accent);
+  }
+}
+
 .stress-actions {
   display: flex;
   gap: 10px;
