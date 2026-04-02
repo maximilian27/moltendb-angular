@@ -1,0 +1,63 @@
+<div class="stress-layout">
+  <div class="stress-header">
+    <div class="stress-title">
+      <h1>Stress Test</h1>
+      <p class="stress-subtitle">Benchmark MoltenDB with bulk read / write / delete operations</p>
+    </div>
+    <div class="stress-actions">
+      <button class="run-btn" (click)="runStressTest()" [disabled]="isRunning()">
+        @if (isRunning()) {
+          <span class="spinner"></span> Running…
+        } @else {
+          ▶ Run Stress Test
+        }
+      </button>
+      @if (results().length > 0 && !isRunning()) {
+        <button class="clear-btn" (click)="clearResults()">✕ Clear</button>
+      }
+    </div>
+  </div>
+
+  @if (currentStep()) {
+    <div class="status-bar" [class.status-done]="currentStep().includes('Done')" [class.status-error]="currentStep().includes('Error')">
+      {{ currentStep() }}
+    </div>
+  }
+
+  @if (results().length > 0) {
+    <div class="results-wrap">
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Documents</th>
+            <th>Duration (ms)</th>
+            <th>Ops / sec</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of results(); track r.operation) {
+            <tr>
+              <td class="op-name">{{ r.operation }}</td>
+              <td class="num">{{ r.count | number }}</td>
+              <td class="num">{{ r.durationMs | number:'1.0-1' }}</td>
+              <td class="num ops">{{ r.opsPerSec | number:'1.0-0' }}</td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" class="total-label">Total duration</td>
+            <td class="num total-val">{{ totalDuration() | number:'1.0-1' }} ms</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  } @else if (!isRunning()) {
+    <div class="empty-state">
+      <div class="empty-icon">⚡</div>
+      <p>Click <strong>Run Stress Test</strong> to benchmark MoltenDB operations.</p>
+    </div>
+  }
+</div>
