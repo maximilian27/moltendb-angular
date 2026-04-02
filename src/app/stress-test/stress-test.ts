@@ -111,7 +111,7 @@ export class StressTest {
     this.isBatchRunning.set(true);
     this.batchResults.set([]);
     const collection = 'stress_batch_data';
-    const batchCount = 10;
+    const batchCount = 25;
     const batchSize = 1000;
     const totalCount = batchCount * batchSize;
 
