@@ -21,8 +21,8 @@
             "assets": [
               "src/favicon.ico",
               "src/public",
-              "src/_headers",
-              "src/_redirects",
+              { "glob": "_headers", "input": "src", "output": "/" },
+              { "glob": "_redirects", "input": "src", "output": "/" },
               {
                 "glob": "moltendb-worker.js",
                 "input": "node_modules/@moltendb-web/core/dist",
