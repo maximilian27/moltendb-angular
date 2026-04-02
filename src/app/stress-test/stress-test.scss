@@ -1,7 +1,6 @@
 :host {
   display: block;
   width: 100%;
-  height: 100%;
   background: var(--bg-base);
   color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -9,12 +8,45 @@
 }
 
 .stress-layout {
-  max-width: 860px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 40px 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.page-header {
+  h1 {
+    margin: 0 0 6px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), #fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
 }
 
 .stress-header {
@@ -25,10 +57,19 @@
   flex-wrap: wrap;
 }
 
+.batch-header {
+  h2 {
+    margin: 0 0 6px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--accent-2);
+  }
+}
+
 .stress-title {
   h1 {
     margin: 0 0 6px;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     font-weight: 800;
     background: linear-gradient(90deg, var(--accent), #fb923c);
     -webkit-background-clip: text;

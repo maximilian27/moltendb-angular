@@ -1,11 +1,22 @@
 <div class="stress-layout">
-  <div class="stress-header">
+
+  <!-- ── Page Title ──────────────────────────────────────────────────────────── -->
+  <div class="page-header">
+    <h1>Stress Test</h1>
+    <p class="stress-subtitle">Benchmark MoltenDB — run both tests side by side and compare results</p>
+  </div>
+
+  <div class="panels">
+
+    <!-- ── Single Write Panel ──────────────────────────────────────────────── -->
+    <div class="panel">
+    <div class="stress-header">
     <div class="stress-title">
       <h1>Stress Test</h1>
-      <p class="stress-subtitle">Benchmark MoltenDB — write 1000 entries at once and see how it performs</p>
+      <p class="stress-subtitle">Benchmark MoltenDB — write 1 000 entries at once and see how it performs</p>
     </div>
     <div class="stress-actions">
-      <button class="run-btn" (click)="runStressTest()" [disabled]="isRunning()">
+      <button class="run-btn" (click)="runStressTest()" [disabled]="isRunning() || isBatchRunning()">
         @if (isRunning()) {
           <span class="spinner"></span> Running…
         } @else {
@@ -18,46 +29,115 @@
     </div>
   </div>
 
-  @if (currentStep()) {
-    <div class="status-bar" [class.status-done]="currentStep().includes('Done')" [class.status-error]="currentStep().includes('Error')">
-      {{ currentStep() }}
-    </div>
-  }
+    @if (currentStep()) {
+      <div class="status-bar" [class.status-done]="currentStep().includes('Done')" [class.status-error]="currentStep().includes('Error')">
+        {{ currentStep() }}
+      </div>
+    }
 
-  @if (results().length > 0) {
-    <div class="results-wrap">
-      <table class="results-table">
-        <thead>
-          <tr>
-            <th>Operation</th>
-            <th>Documents</th>
-            <th>Duration (ms)</th>
-            <th>Ops / sec</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (r of results(); track r.operation) {
+    @if (results().length > 0) {
+      <div class="results-wrap">
+        <table class="results-table">
+          <thead>
             <tr>
-              <td class="op-name">{{ r.operation }}</td>
-              <td class="num">{{ r.count | number }}</td>
-              <td class="num">{{ r.durationMs | number:'1.0-1' }}</td>
-              <td class="num ops">{{ r.opsPerSec | number:'1.0-0' }}</td>
+              <th>Operation</th>
+              <th>Documents</th>
+              <th>Duration (ms)</th>
+              <th>Ops / sec</th>
             </tr>
-          }
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="2" class="total-label">Total duration</td>
-            <td class="num total-val">{{ totalDuration() | number:'1.0-1' }} ms</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
+          </thead>
+          <tbody>
+            @for (r of results(); track r.operation) {
+              <tr>
+                <td class="op-name">{{ r.operation }}</td>
+                <td class="num">{{ r.count | number }}</td>
+                <td class="num">{{ r.durationMs | number:'1.0-1' }}</td>
+                <td class="num ops">{{ r.opsPerSec | number:'1.0-0' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" class="total-label">Total duration</td>
+              <td class="num total-val">{{ totalDuration() | number:'1.0-1' }} ms</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    } @else if (!isRunning()) {
+      <div class="empty-state">
+        <div class="empty-icon">⚡</div>
+        <p>Click <strong>Run Stress Test</strong> to benchmark MoltenDB operations.</p>
+      </div>
+    }
     </div>
-  } @else if (!isRunning()) {
-    <div class="empty-state">
-      <div class="empty-icon">⚡</div>
-      <p>Click <strong>Run Stress Test</strong> to benchmark MoltenDB operations.</p>
+
+    <!-- ── Batch Write Panel ───────────────────────────────────────────────── -->
+    <div class="panel">
+    <div class="stress-header batch-header">
+    <div class="stress-title">
+      <h2>Batch Write Test</h2>
+      <p class="stress-subtitle">Benchmark MoltenDB — write 10 × 1 000 docs (10 000 total) in sequential batches</p>
     </div>
-  }
+    <div class="stress-actions">
+      <button class="run-btn" (click)="runBatchStressTest()" [disabled]="isRunning() || isBatchRunning()">
+        @if (isBatchRunning()) {
+          <span class="spinner"></span> Running…
+        } @else {
+          ▶ Run Batch Test
+        }
+      </button>
+      @if (batchResults().length > 0 && !isBatchRunning()) {
+        <button class="clear-btn" (click)="clearBatchResults()">✕ Clear</button>
+      }
+    </div>
+  </div>
+
+    @if (batchStep()) {
+      <div class="status-bar" [class.status-done]="batchStep().includes('Done')" [class.status-error]="batchStep().includes('Error')">
+        {{ batchStep() }}
+      </div>
+    }
+
+    @if (batchResults().length > 0) {
+      <div class="results-wrap">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Operation</th>
+              <th>Documents</th>
+              <th>Duration (ms)</th>
+              <th>Ops / sec</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of batchResults(); track r.operation) {
+              <tr>
+                <td class="op-name">{{ r.operation }}</td>
+                <td class="num">{{ r.count | number }}</td>
+                <td class="num">{{ r.durationMs | number:'1.0-1' }}</td>
+                <td class="num ops">{{ r.opsPerSec | number:'1.0-0' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" class="total-label">Total duration</td>
+              <td class="num total-val">{{ batchTotalDuration() | number:'1.0-1' }} ms</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    } @else if (!isBatchRunning()) {
+      <div class="empty-state">
+        <div class="empty-icon">📦</div>
+        <p>Click <strong>Run Batch Test</strong> to benchmark batched writes.</p>
+      </div>
+    }
+    </div>
+
+  </div>
+
 </div>
