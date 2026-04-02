@@ -1,59 +1,74 @@
-# AngularMoltendb
+# angular-moltendb — Sample App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.5.
+A sample Angular application demonstrating the [`@moltendb-web/angular`](https://www.npmjs.com/package/@moltendb-web/angular) library.
 
-## Development server
+It showcases real-world usage of MoltenDB in an Angular project, including CRUD operations on a laptop catalogue and a stress-test / benchmarking page.
 
-To start a local development server, run:
+> **Fully offline, no backend required.**  
+> All data is persisted in the browser's [Origin Private File System (OPFS)](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system) — data survives page reloads and even browser crashes, and is only cleared when you explicitly wipe the OPFS storage.
 
-```bash
-ng serve
-```
+---
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Related links
 
-## Code scaffolding
+- 📦 **npm package** — [@moltendb-web/angular](https://www.npmjs.com/package/@moltendb-web/angular)
+- 📖 **Library README** — [packages/angular/README.md](https://github.com/maximilian27/moltendb-web/blob/develop/packages/angular/README.md)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## What's inside
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+| Route | Description |
+|---|---|
+| `/laptops` | Browse, create, update and delete laptop entries stored in MoltenDB |
+| `/stress-test` | Benchmark MoltenDB — single write (1 000 docs) and batch write (25 × 1 000 docs) |
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## Getting started
 
-To build the project run:
+### Prerequisites
 
-```bash
-ng build
-```
+- Node.js ≥ 20
+- npm ≥ 10
+- **No backend needed** — MoltenDB runs entirely in the browser via OPFS
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### Install dependencies
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Run the development server
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Open your browser at `http://localhost:4200/`.
 
-## Additional Resources
+### Build for production
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm run build
+```
+
+The build artifacts are placed in the `dist/` directory.
+
+### Run tests
+
+```bash
+npm test
+```
+
+---
+
+## Using `@moltendb-web/angular` in your own project
+
+Install the package:
+
+```bash
+npm install @moltendb-web/angular
+```
+
+Then follow the full integration guide in the [library README](https://github.com/maximilian27/moltendb-web/blob/develop/packages/angular/README.md).
