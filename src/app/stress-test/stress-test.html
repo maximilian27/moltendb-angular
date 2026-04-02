@@ -7,6 +7,22 @@
     <p class="engine-note">⚠️ The core MoltenDB engine limits writes to <strong>1 000 entries per JSON payload</strong> and a maximum of <strong>10 MB per request</strong>.</p>
   </div>
 
+  <!-- ── UI Thread Indicator ─────────────────────────────────────────────── -->
+  <div class="thread-indicator" [class.active]="isRunning() || isBatchRunning()">
+    <div class="thread-label">
+      @if (isRunning() || isBatchRunning()) {
+        <span class="thread-dot running"></span>
+        <strong>UI thread is free</strong> — this animation runs on the main thread while MoltenDB works in a Web Worker
+      } @else {
+        <span class="thread-dot idle"></span>
+        UI thread indicator — start a test to see it animate
+      }
+    </div>
+    <div class="ball-track">
+      <div class="ball" [class.bouncing]="isRunning() || isBatchRunning()"></div>
+    </div>
+  </div>
+
   <div class="panels">
 
     <!-- ── Single Write Panel ──────────────────────────────────────────────── -->
