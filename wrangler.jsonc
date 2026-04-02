@@ -3,7 +3,8 @@
   "name": "moltendb-angular",
   "compatibility_date": "2025-09-27",
   "assets": {
-    "directory": "dist/angular-moltendb/browser"
+    "directory": "dist/angular-moltendb/browser",
+    "not_found_handling": "single-page-application" // <--- Add this line!
   },
   "observability": {
     "enabled": true
