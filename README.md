@@ -31,6 +31,7 @@ It showcases real-world usage of MoltenDB in an Angular project, including CRUD 
 
 - Node.js ≥ 20
 - npm ≥ 10
+- Angular ≥ 17
 - **No backend needed** — MoltenDB runs entirely in the browser via OPFS
 
 ### Install dependencies
