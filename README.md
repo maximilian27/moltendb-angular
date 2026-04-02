@@ -13,6 +13,8 @@ It showcases real-world usage of MoltenDB in an Angular project, including CRUD 
 
 - 📦 **npm package** — [@moltendb-web/angular](https://www.npmjs.com/package/@moltendb-web/angular)
 - 📖 **Library README** — [packages/angular/README.md](https://github.com/maximilian27/moltendb-web/blob/develop/packages/angular/README.md)
+- 🚀 **Live demo** — [moltendb-angular.maximilian-both27.workers.dev/laptops](https://moltendb-angular.maximilian-both27.workers.dev/laptops)
+- ⚡ **Try on StackBlitz** — [stackblitz.com/~/github.com/maximilian27/moltendb-angular](https://stackblitz.com/~/github.com/maximilian27/moltendb-angular)
 
 ---
 
