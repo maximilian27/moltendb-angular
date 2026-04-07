@@ -119,8 +119,15 @@ export class LaptopTable implements OnInit {
     const cols   = this.columns();
 
     const where: Record<string, any> = {};
-    if (brand !== 'all')        where['brand'] = brand;
-    else if (search)            where['brand'] = { $contains: search.charAt(0).toUpperCase() + search.slice(1) };
+    if (brand !== 'all') {
+      where['brand'] = brand;
+    } else if (search) {
+      // So much cleaner!
+      where['$or'] = [
+        { brand: { $contains: search } },
+        { model: { $contains: search } },
+      ];
+    }
     if (cat   !== 'all')   where['category'] = cat;
     if (os    !== 'all')   where['os']       = os;
     if (panel !== 'all')   where['panel']    = panel;
