@@ -39,13 +39,13 @@ export class StressTest {
 
     try {
       // ── Write test ────────────────────────────────────────────────────────
-      const writeCount = 1100;
+      const writeCount = 1000;
       this.currentStep.set(`Writing ${writeCount.toLocaleString()} documents…`);
       const writeData: Record<string, any> = {};
       for (let i = 0; i < writeCount; i++) {
         writeData[`item_${i}`] = {
           index: i,
-          value: Math.random() * 1100,
+          value: Math.random() * 1000,
           label: `Item ${i}`,
           active: i % 2 === 0,
           category: ['A', 'B', 'C', 'D'][i % 4],
