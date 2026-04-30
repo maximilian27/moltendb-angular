@@ -10,7 +10,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideMoltenDb({
       name: 'local_test_db',
-      workerUrl: '/moltendb-worker.js'
+      workerUrl: '/moltendb-worker.js',
+      rateLimitRequests: 100000,
+      maxBodySize: 100 * 1024 * 1024
     })
   ]
 };
