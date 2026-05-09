@@ -327,3 +327,44 @@
 
   strong { color: var(--text-main); }
 }
+
+
+.schema-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+}
+
+.schema-block {
+  margin: 0;
+  padding: 16px 20px;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: var(--text-main);
+  overflow-x: auto;
+  white-space: pre;
+
+  code {
+    font-family: inherit;
+  }
+}
+
+.schema-comment {
+  color: var(--text-muted);
+  font-style: italic;
+}

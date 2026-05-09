@@ -2,7 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import {provideMoltenDb} from "@moltendb-web/angular";
+import { provideMoltenDb } from "@moltendb-web/angular";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -11,8 +11,8 @@ export const appConfig: ApplicationConfig = {
     provideMoltenDb({
       name: 'local_test_db',
       workerUrl: '/moltendb-worker.js',
-      rateLimitRequests: 100000,
-      maxBodySize: 100 * 1024 * 1024
+      maxBodySize: 100 * 1024 * 1024,
+      maxKeysPerRequest: 25000,
     })
   ]
 };
