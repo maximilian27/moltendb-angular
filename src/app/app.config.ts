@@ -12,7 +12,7 @@ export const appConfig: ApplicationConfig = {
       name: 'local_test_db',
       workerUrl: '/moltendb-worker.js',
       maxBodySize: 100 * 1024 * 1024,
-      maxKeysPerRequest: 25000,
+      maxKeysPerRequest: 25000
     })
   ]
 };
