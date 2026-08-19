@@ -18,9 +18,7 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
-    "@moltendb-web/angular": "file:public/moltendb-web-angular-1.8.0.tgz",
-    "@moltendb-web/core": "file:public/moltendb-web-core-1.8.0.tgz",
-    "@moltendb-web/query": "file:public/moltendb-web-query-1.8.0.tgz",
+    "@moltendb-web/angular": "file:public/moltendb-web-angular-2.3.0.tgz",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
